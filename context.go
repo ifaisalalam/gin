@@ -43,6 +43,9 @@ const BodyBytesKey = "_gin-gonic/gin/bodybyteskey"
 // abortIndex represents a typical value used in abort functions.
 const abortIndex int8 = math.MaxInt8 >> 1
 
+// &CtxKey is the key that a Context returns itself for.
+var CtxKey int
+
 // Context is the most important part of gin. It allows us to pass variables between middleware,
 // manage the flow, validate the JSON of a request and render a JSON response for example.
 type Context struct {
@@ -1191,6 +1194,9 @@ func (c *Context) Err() error {
 func (c *Context) Value(key interface{}) interface{} {
 	if key == 0 {
 		return c.Request
+	}
+	if key == &CtxKey {
+		return c
 	}
 	if keyAsString, ok := key.(string); ok {
 		if val, exists := c.Get(keyAsString); exists {
